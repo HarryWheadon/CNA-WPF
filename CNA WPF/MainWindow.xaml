@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CNA_WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="480" Width="820">
-    <Grid Background="#FF46C8A8">
+    <Grid Background="#FF1ECAA0" Cursor="Cross">
         <Button x:Name="SendmessageButton" Content="Send" HorizontalAlignment="Left" Margin="523,387,0,0" VerticalAlignment="Top" Click="Button_Click" Height="37" Width="131" Background="White">
             <Button.Effect>
                 <DropShadowEffect/>

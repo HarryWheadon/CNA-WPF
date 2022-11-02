@@ -49,17 +49,24 @@ namespace CNA_WPF
             }
             else
             {
-                string message = messageText.Text;
-
-                // The work to perform on another thread
-                ThreadStart ButtonThread = delegate ()
+                
+                if (localName.Text == "")
                 {
-                // sets the text on a Textblock Control
-                // This will work as its using the dispatcher
-                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action<string>(SendMessage), message);
+                    MessageBox.Show("Please enter a name in Local Name Textbox!", "warning");
+                }
+                else 
+                {
+                    string message = localName.Text + " : " + messageText.Text;
+                    // The work to perform on another thread
+                    ThreadStart ButtonThread = delegate ()
+                {
+                    // sets the text on a Textblock Control
+                    // This will work as its using the dispatcher
+                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action<string>(SendMessage), localName.Text + " : " + message);
                 };
-                // Create new thread and kick it started!
-                new Thread(ButtonThread).Start();
+                    // Create new thread and kick it started!
+                    new Thread(ButtonThread).Start();
+                }
             }
         }
         private void SendMessage(string status)
@@ -73,23 +80,3 @@ namespace CNA_WPF
         }
     }
 }
-
-/*if (messageText.Text == "")
-            {
-                MessageBox.Show("No message in text box!", "warning");
-            }
-            else
-            {
-                string message = messageText.Text;
-                messageText.Text = "";
-                if(localName.Text == "")
-                {
-                    MessageBox.Show("Please enter a name in Local Name Textbox!", "warning");
-                    messageText.Text = message;
-                }
-                else
-                {
-                    string name = localName.Text;
-                    chatBox.Text += name + " : " + message;
-                }
-            }*/
