@@ -61,7 +61,7 @@ namespace ServerProj
             switch(code)
             {
                 case "0":
-                    return ("you have chosen 0");
+                    return ("Pick a number between 1 and 10");
                 case "1":
                     return ("you have chosen 1");
                 case "2":

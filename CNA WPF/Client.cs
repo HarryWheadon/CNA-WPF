@@ -54,9 +54,8 @@ namespace CNA_WPF
                 {
                     break;
                 }
-
-                m_tcpClient.Close();
             }
+            m_tcpClient.Close();
         }
 
         private void ProcessServerResponse()
