@@ -22,6 +22,7 @@ namespace CNA_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Client m_client;
         public MainWindow()
         {
             InitializeComponent();
@@ -40,7 +41,6 @@ namespace CNA_WPF
         {
 
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (messageText.Text == "")
