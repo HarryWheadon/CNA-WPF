@@ -5,12 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CNA_WPF
 {
-    internal class Client
+    public class Client
     {
+        private MainWindow Clientform;
         private NetworkStream m_stream;
         private StreamWriter m_writer;
         private StreamReader m_reader;
@@ -41,26 +43,32 @@ namespace CNA_WPF
 
         public void Run()
         {
-            string userInput;
-            ProcessServerResponse();
-            while((userInput = Console.ReadLine()) != null)
-            {
-                m_writer.WriteLine(userInput);
-                m_writer.Flush();
+            Clientform = new MainWindow(this);
 
-                ProcessServerResponse();
-
-                if(userInput == ("end"))
-                {
-                    break;
-                }
-            }
-            m_tcpClient.Close();
+            Thread thread = new Thread(ProcessServerResponse);
+            thread.Start();
+            Clientform.ShowDialog();
         }
 
         private void ProcessServerResponse()
         {
-            Console.WriteLine("Server says: " + m_reader.ReadLine());
+            try
+            {
+                while (m_tcpClient.Connected)
+                {
+                    Clientform.UpdateChatBox("Server says: " + m_reader.ReadLine());
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public void SendMessage(string message)
+        {
+            m_writer.Write("hello");
+            m_writer.Flush();
         }
     }
 }

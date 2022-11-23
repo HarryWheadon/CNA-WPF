@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net;
+using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,31 +18,29 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+
 namespace CNA_WPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    
     public partial class MainWindow : Window
     {
         private Client m_client;
-        public MainWindow()
+        public MainWindow(Client client)
         {
             InitializeComponent();
-        }
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
+            m_client = client;
         }
 
-        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        public void UpdateChatBox(string message)
         {
-
-        }
-
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-
+            messageText.Dispatcher.Invoke(() =>
+            {
+                messageText.Text = message + Environment.NewLine;
+                messageText.ScrollToEnd();
+            });
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -49,12 +50,12 @@ namespace CNA_WPF
             }
             else
             {
-                
+
                 if (localName.Text == "")
                 {
                     MessageBox.Show("Please enter a name in Local Name Textbox!", "warning");
                 }
-                else 
+                else
                 {
                     string message = localName.Text + " : " + messageText.Text;
                     // The work to perform on another thread
@@ -74,7 +75,22 @@ namespace CNA_WPF
             chatBox.Text = status;
         }
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
         private void localName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
 
         }
