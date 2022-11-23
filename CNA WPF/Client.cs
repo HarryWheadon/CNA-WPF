@@ -48,6 +48,7 @@ namespace CNA_WPF
             Thread thread = new Thread(ProcessServerResponse);
             thread.Start();
             Clientform.ShowDialog();
+            m_tcpClient?.Close();
         }
 
         private void ProcessServerResponse()
@@ -63,11 +64,12 @@ namespace CNA_WPF
             {
                 Console.WriteLine(e);
             }
+
         }
 
         public void SendMessage(string message)
         {
-            m_writer.Write("hello");
+            m_writer.Write(message);
             m_writer.Flush();
         }
     }

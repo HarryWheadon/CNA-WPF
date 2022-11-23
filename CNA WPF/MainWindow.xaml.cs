@@ -36,12 +36,22 @@ namespace CNA_WPF
 
         public void UpdateChatBox(string message)
         {
-            messageText.Dispatcher.Invoke(() =>
+            chatBox.Dispatcher.Invoke(() =>
             {
-                messageText.Text = message + Environment.NewLine;
-                messageText.ScrollToEnd();
+                chatBox.Text = message + Environment.NewLine;
+                chatBox.ScrollToEnd();
             });
         }
+
+        public void UpdateReturnBox(string message)
+        {
+            returnBox.Dispatcher.Invoke(() =>
+            {
+                returnBox.Text = message + Environment.NewLine;
+                returnBox.ScrollToEnd();
+            });
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (messageText.Text == "")
@@ -63,8 +73,13 @@ namespace CNA_WPF
                 {
                     // sets the text on a Textblock Control
                     // This will work as its using the dispatcher
-                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action<string>(SendMessage), localName.Text + " : " + message);
-                };
+                    // Dispatcher.Invoke(DispatcherPriority.Normal, new Action<string>(SendMessage), localName.Text + " : " + message);
+
+                    chatBox.Dispatcher.Invoke(() =>
+                    {
+                        SendMessage(message);
+                    });
+                    };
                     // Create new thread and kick it started!
                     new Thread(ButtonThread).Start();
                 }

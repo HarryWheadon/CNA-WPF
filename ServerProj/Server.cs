@@ -22,7 +22,6 @@ namespace ServerProj
             m_TcpListener = new TcpListener(ip, port);
         }
 
-
         public void Start()
         {
             m_clients = new ConcurrentDictionary<int, ConnectedClient>();
