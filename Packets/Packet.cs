@@ -5,20 +5,20 @@ using System.Runtime.Serialization.Formatters;
 
 namespace Packets
 {
-    public class Packet
-    {
-        public Enum PacketType
+        public enum PacketType
         {
-            Chat Message,
-            Private Message,
-            Client Name,
+            CHAT_MESSAGE,
+            PRIVATE_MESSAGE,
+            CLIENT_NAME,
         }
-        public PacketType packetType()
+
+        [Serializable]
+        public class Packet
         {
-
+        public PacketType packetType { get; set; }
         }
-    }
 
+    [Serializable]
     public class ChatMessagePacket : Packet
     {
         public string message;

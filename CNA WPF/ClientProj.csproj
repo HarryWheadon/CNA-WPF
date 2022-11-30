@@ -9,4 +9,8 @@
     <StartupObject>CNA_WPF.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Packets\Packets.csproj" />
+  </ItemGroup>
+
 </Project>

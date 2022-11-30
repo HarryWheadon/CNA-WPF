@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System.Collections.Concurrent;
+using Packets;
 
 namespace ServerProj
 {
@@ -62,11 +63,15 @@ namespace ServerProj
         {
             string receivedMessage;
 
-            m_clients[index].Send("You have connected to the server - send 0 for valid options");
+           //m_clients[index].Send("You have connected to the server - send 0 for valid options");
 
-            while((receivedMessage = m_clients[index].Read()) != null)
+            if(receivedMessage != null)
             {
-                m_clients[index].Send(GetReturnMessage(receivedMessage));
+                switch(receivedMessage.m_type)
+                {
+                    case PacketType.CHAT_MESSAGE:
+                        ChatMessagePacket chatPacket = (ChatMessagePacket)receivedMessage;
+                        m_clients[index].Send(new ChatMessagePacket(GetReturnMessage(chatPacket.message)));
                 
                 if(receivedMessage == "end")
                 {
@@ -76,7 +81,9 @@ namespace ServerProj
 
                     break;
                 }
+                }
             }
+           
         }
 
         private string GetReturnMessage(string code) 
