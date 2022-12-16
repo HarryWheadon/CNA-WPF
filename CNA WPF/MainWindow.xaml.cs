@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
+using Packets;
 
 namespace CNA_WPF
 {
@@ -34,60 +34,53 @@ namespace CNA_WPF
             m_client = client;
         }
 
+        // Adds a new message
         public void UpdateChatBox(string message)
         {
+            Console.WriteLine("updated chat box");
             chatBox.Dispatcher.Invoke(() =>
             {
-                chatBox.Text = message + Environment.NewLine;
+                chatBox.Text += message + Environment.NewLine;
                 chatBox.ScrollToEnd();
             });
         }
 
         public void UpdateReturnBox(string message)
         {
+            Console.WriteLine("updated return box");
             returnBox.Dispatcher.Invoke(() =>
             {
-                returnBox.Text = message + Environment.NewLine;
+                returnBox.Text += "Server: " + message + Environment.NewLine;
                 returnBox.ScrollToEnd();
             });
         }
 
+        // When the submit button is clicked
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            // The message box has to contain something
             if (messageText.Text == "")
             {
                 MessageBox.Show("No message in text box!", "warning");
             }
             else
             {
-
+                // A name has to be filled in for the button to be pressed
                 if (localName.Text == "")
                 {
                     MessageBox.Show("Please enter a name in Local Name Textbox!", "warning");
                 }
                 else
                 {
-                    string message = localName.Text + " : " + messageText.Text;
-                    // The work to perform on another thread
-                    ThreadStart ButtonThread = delegate ()
-                {
-                    // sets the text on a Textblock Control
-                    // This will work as its using the dispatcher
-                    // Dispatcher.Invoke(DispatcherPriority.Normal, new Action<string>(SendMessage), localName.Text + " : " + message);
-
-                    chatBox.Dispatcher.Invoke(() =>
-                    {
-                        SendMessage(message);
-                    });
-                    };
-                    // Create new thread and kick it started!
-                    new Thread(ButtonThread).Start();
+                    // Sends message as a packet
+                    Packet message = new Packets.ChatMessagePacket(messageText.Text);
+                    message.packetType = PacketType.CHAT_MESSAGE;
+                    m_client.Send(message);
+                    UpdateChatBox(messageText.Text);
+                    UpdateReturnBox(messageText.Text);
+                    messageText.Text = (" ");
                 }
             }
-        }
-        private void SendMessage(string status)
-        {
-            chatBox.Text = status;
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)

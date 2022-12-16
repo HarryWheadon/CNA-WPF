@@ -9,9 +9,11 @@ using System.IO;
 using System.Threading;
 using System.Collections.Concurrent;
 using Packets;
+using System.Net.Mail;
 
 namespace ServerProj
 {
+    // Server class
     internal class Server
     {
         private TcpListener m_TcpListener;
@@ -22,7 +24,8 @@ namespace ServerProj
             IPAddress ip = IPAddress.Parse(ipAddress);
             m_TcpListener = new TcpListener(ip, port);
         }
-
+        
+        // Starts the server
         public void Start()
         {
             m_clients = new ConcurrentDictionary<int, ConnectedClient>();
@@ -33,9 +36,10 @@ namespace ServerProj
 
             try
             {
+                // Searches for clients
                 while (true)
                 {
-                    Socket socket = m_TcpListener.AcceptSocket();
+                    Socket socket = m_TcpListener.AcceptSocket(); // Waits for a value to be returned
                     Console.WriteLine("Connection Made");
 
                     ConnectedClient client = new ConnectedClient(socket);
@@ -51,39 +55,42 @@ namespace ServerProj
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
-            }
-            
+            }   
         }
         public void Stop()
         {
             m_TcpListener.Stop();
         }
 
+        // Sends data from server to client
         private void ClientMethod(int index)
         {
-            string receivedMessage;
-
-           //m_clients[index].Send("You have connected to the server - send 0 for valid options");
-
-            if(receivedMessage != null)
-            {
-                switch(receivedMessage.m_type)
+            Packet receivedMessage;
+            try {
+                while ((receivedMessage = m_clients[index].Read()) != null);
                 {
-                    case PacketType.CHAT_MESSAGE:
-                        ChatMessagePacket chatPacket = (ChatMessagePacket)receivedMessage;
-                        m_clients[index].Send(new ChatMessagePacket(GetReturnMessage(chatPacket.message)));
-                
-                if(receivedMessage == "end")
-                {
-                    m_clients[index].close();
-                    ConnectedClient c;
-                    m_clients.TryRemove(index, out c);
-
-                    break;
-                }
+                    switch (receivedMessage.packetType)
+                    {
+                        case PacketType.CHAT_MESSAGE: // sends a chat message
+                            {
+                                ChatMessagePacket chatPacket = (ChatMessagePacket)receivedMessage;
+                                GetReturnMessage(chatPacket.message);
+                                m_clients[index].Send(chatPacket);
+                                break;
+                            }
+                    }
                 }
             }
-           
+            // If this fails it will send an error message
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception:" + e.Message);
+            }
+
+            // Closes and removes the client
+            m_clients[index].close();
+            ConnectedClient c;
+            m_clients.TryRemove(index, out c);
         }
 
         private string GetReturnMessage(string code) 
